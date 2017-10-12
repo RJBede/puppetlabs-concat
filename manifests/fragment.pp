@@ -1,4 +1,4 @@
-# == Define: concat::fragment
+# == Define: concat_redis::fragment
 #
 # Puts a file fragment into a directory previous setup using concat
 #
@@ -24,7 +24,7 @@
 # [*backup*]
 #   Deprecated
 #
-define concat::fragment(
+define concat_redis::fragment(
     $target,
     $content = undef,
     $source  = undef,
@@ -64,14 +64,14 @@ define concat::fragment(
     $my_ensure = $ensure
   }
 
-  include concat::setup
+  include concat_redis::setup
 
   $safe_name        = regsubst($name, '[/:\n]', '_', 'GM')
   $safe_target_name = regsubst($target, '[/:\n]', '_', 'GM')
-  $concatdir        = $concat::setup::concatdir
+  $concatdir        = $concat_redis::setup::concatdir
   $fragdir          = "${concatdir}/${safe_target_name}"
-  $fragowner            = $concat::setup::fragment_owner
-  $fragmode             = $concat::setup::fragment_mode
+  $fragowner            = $concat_redis::setup::fragment_owner
+  $fragmode             = $concat_redis::setup::fragment_mode
 
   # The file type's semantics are problematic in that ensure => present will
   # not over write a pre-existing symlink.  We are attempting to provide

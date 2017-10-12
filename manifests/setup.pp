@@ -1,23 +1,23 @@
-# === Class: concat::setup
+# === Class: concat_redis::setup
 #
 # Sets up the concat system. This is a private class.
 #
 # [$concatdir]
-#   is where the fragments live and is set on the fact concat_basedir.
+#   is where the fragments live and is set on the fact concat_redis_basedir.
 #   Since puppet should always manage files in $concatdir and they should
 #   not be deleted ever, /tmp is not an option.
 #
 # It also copies out the concatfragments.{sh,rb} file to ${concatdir}/bin
 #
-class concat::setup {
+class concat_redis::setup {
   if $caller_module_name != $module_name {
     warning("${name} is deprecated as a public API of the ${module_name} module and should no longer be directly included in the manifest.")
   }
 
-  if $::concat_basedir {
-    $concatdir = $::concat_basedir
+  if $::concat_redis_basedir {
+    $concatdir = $::concat_redis_basedir
   } else {
-    fail ('$concat_basedir not defined. Try running again with pluginsync=true on the [master] and/or [main] section of your node\'s \'/etc/puppet/puppet.conf\'.')
+    fail ('$concat_redis_basedir not defined. Try running again with pluginsync=true on the [master] and/or [main] section of your node\'s \'/etc/puppet/puppet.conf\'.')
   }
 
   # owner and mode of fragment files (on windows owner and access rights should
@@ -31,8 +31,8 @@ class concat::setup {
   # this goes smoothly, we should move towards completely eliminating the .sh
   # version.
   $script_name = $::osfamily? {
-    /(?i:(Windows|Solaris|AIX))/ => 'concatfragments.rb',
-    default                      => 'concatfragments.sh'
+    /(?i:(Windows|Solaris|AIX))/ => 'concatredisfragments.rb',
+    default                      => 'concatredisfragments.sh'
   }
 
   $script_path = "${concatdir}/bin/${script_name}"
@@ -54,7 +54,7 @@ class concat::setup {
     ensure => file,
     owner  => $script_owner,
     mode   => $script_mode,
-    source => "puppet:///modules/concat/${script_name}",
+    source => "puppet:///modules/concat_redis/${script_name}",
   }
 
   file { [ $concatdir, "${concatdir}/bin" ]:

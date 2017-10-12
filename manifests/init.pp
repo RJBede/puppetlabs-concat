@@ -1,4 +1,4 @@
-# == Define: concat
+# == Define: concat_redis
 #
 # Sets up so that you can use fragments to build a final config file,
 #
@@ -52,7 +52,7 @@
 # * The final file can be referenced as File["/path/to/file"] or
 #   File["concat_/path/to/file"]
 #
-define concat(
+define concat_redis(
   $ensure         = 'present',
   $path           = $name,
   $owner          = undef,
@@ -89,13 +89,13 @@ define concat(
     warning('The $gnu parameter to concat is deprecated and has no effect')
   }
 
-  include concat::setup
+  include concat_redis::setup
 
   $safe_name            = regsubst($name, '[/:]', '_', 'G')
-  $concatdir            = $concat::setup::concatdir
+  $concatdir            = $concat_redis::setup::concatdir
   $fragdir              = "${concatdir}/${safe_name}"
   $concat_name          = 'fragments.concat.out'
-  $script_command       = $concat::setup::script_command
+  $script_command       = $concat_redis::setup::script_command
   $default_warn_message = '# This file is managed by Puppet. DO NOT EDIT.'
   $bool_warn_message    = 'Using stringified boolean values (\'true\', \'yes\', \'on\', \'false\', \'no\', \'off\') to represent boolean true/false as the $warn parameter to concat is deprecated and will be treated as the warning message in a future release'
 
@@ -210,7 +210,7 @@ define concat(
     }
 
     # if puppet is running as root, this exec should also run as root to allow
-    # the concatfragments.sh script to potentially be installed in path that
+    # the concatredisfragments.sh script to potentially be installed in path that
     # may not be accessible by a target non-root owner.
     exec { "concat_${name}":
       alias     => "concat_${fragdir}",
